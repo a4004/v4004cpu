@@ -50,7 +50,7 @@ The following is a hexadecimal byte representation of the file:
 0040 | 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 ```
 The first 2 bytes `50 00` indicate the size of the payload which is 80 bytes. The hexadecimal 16-bit representation when decoded from Little Endian is `0x0050`.
-The payload can be difficult to understand in this format so I've rewritten them in a similar structure to assembly programs:
+The payload can be difficult to understand in this format so I've rewritten them in a similar structure to assembly programs. Keep in mind that the bytes are written in Little Endian format so something like 00 F1 48 00 would actually be 0xF100 and 0x0048 (or 0x48).
 
 ```
 ---HEADER---
