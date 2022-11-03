@@ -1,0 +1,10 @@
+=== V4004 Instruction Set ===
+	- CPU is 16-bits
+
+Assembly Code Format: <instruction> <operands ...>
+
+Machine Code Format: <opcode> <opcode> <operand> <operand>
+	- where <...> represents 1 byte.
+	- note not all instructions use all 4 operands - in this case, null padding bytes are included.
+
+
