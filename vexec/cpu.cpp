@@ -1106,6 +1106,7 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             cycles = 0;
             break;
         }
+        cycles--;
     }
 }
 
