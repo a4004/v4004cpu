@@ -20,7 +20,7 @@ A custom virtual CPU implementation in C++ bundled together with a compatible as
 ![Demo Animation in APNG Format](https://raw.githubusercontent.com/a4004/v4004cpu/master/demo.png)
 
 ## Getting Started
-> **Another Important Note:** The project isn't entirely finished and is missing a working assembler at the time of writing. The releases section of this repository only includes the demo version of the executable and the example V4004 binary "Hello World!" program. The demo version of the emulator has a reduced memory size in order to make it easier to demonstrate it is working. If you require more than 128 bytes of memory, you will have to compile the emulator yourself or wait until the next release.
+> **Another Important Note:** The project isn't entirely finished and is missing a fully working assembler at the time of writing. The releases section of this repository only includes the demo version of the executable and the example V4004 binary "Hello World!" program. The demo version of the emulator has a reduced memory size in order to make it easier to demonstrate it is working. If you require more than 128 bytes of memory, you will have to compile the emulator yourself or wait until the next release.
 1. Download the [latest release](https://github.com/a4004/v4004cpu/releases).
 2. Shift-right click the file manager window and choose *Open PowerShell window here*.
 
@@ -37,6 +37,8 @@ PS > .\vexec.exe .\example_hello_world.v4004 5 5000
 ```
 
 ## 👨‍💻 Writing Binary Code 👨‍💻
+> **Quick Note:** An early version of the assembler is available to use which has limited support for the current instruction set. To use it, just clone the repo and build the *vassemble* project. The assembler is evolving every weekend so it's recommended that you check for the newest build at least once a week.
+
 Programs made for the V4004 CPU have a simple executable file structure which consists of two initial bytes that indicate the size of the program and then the program code itself. That's it. The contents of the executable file are stored using 16-bits in Little Endian format which includes the size header and the main executable payload of the file. This short section will break down the `example_hello_world.v4004` file to make it easier to understand. When reading this it may be a good idea to refer to `coredef.h` which contains the assembly code mnemonics as C++ `#define` preprocessor commands.
  
 The following is a hexadecimal byte representation of the file:
