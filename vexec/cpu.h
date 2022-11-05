@@ -43,9 +43,9 @@ private:
     void setFlagsDiv(WORD value, WORD a, WORD b);
 
     BYTE fetch_next_byte(unsigned int& cycles, mem& memory);
-    WORD fetch_next_word(unsigned int& cycles, mem& memory);
-    int write_word(unsigned int& cycles, mem& memory);
-    WORD read_word(unsigned int& cycles, mem& memory);
+    WORD fetch_next_wor_d(unsigned int& cycles, mem& memory);
+    int write_wor_d(unsigned int& cycles, mem& memory);
+    WORD read_wor_d(unsigned int& cycles, mem& memory);
 
     V_REGISTERS registers;
     WORD cache[CACHE_SIZE];

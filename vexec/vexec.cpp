@@ -49,7 +49,7 @@ int wmain(int argc, const wchar_t* argv[])
 			}
 		}
 
-		printf("Starting CPU emulator with the following properties:\n\tFile to Run: %s\n\tClock Speed: %d Hz\n\tCycle Limit: %d ticks\n\n...\n", (const char*)argv[1], clockSpeed, clockCycles);
+		printf("Starting CPU emul_ator with the following properties:\n\tFile to Run: %s\n\tClock Speed: %d Hz\n\tCycle Limit: %d ticks\n\n...\n", (const char*)argv[1], clockSpeed, clockCycles);
 
 		cpu cpu;
 		mem mem;
