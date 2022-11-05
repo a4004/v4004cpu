@@ -148,6 +148,12 @@ namespace vassemble
             machineCode.Add((byte)((data & 0xFF00) >> 8));
         }
 
+        static ushort ResolveValueFromToken(string token)
+        {
+            ushort result = ushort.Parse(token.Replace("#", ""), System.Globalization.NumberStyles.HexNumber);
+            return result;
+        }
+
         static ushort ResolveAddressFromToken(string token)
         {
             try
@@ -173,6 +179,50 @@ namespace vassemble
                 case "tin":
                     AddLEWord(0xF000, ref machineCode);
                     AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    OK();
+                    break;
+                case "tout":
+                    if (token2.StartsWith("#"))
+                    {
+                        AddLEWord(0xF100, ref machineCode);
+                        AddLEWord(ResolveValueFromToken(token2), ref machineCode);
+                    }
+                    else if (token2.StartsWith("&"))
+                    {
+                        AddLEWord(0xF101, ref machineCode);
+                        AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    }
+                    else
+                    {
+                        switch(token2)
+                        {
+                            case "ra":
+                                AddLEWord(0xF10A, ref machineCode);
+                                break;
+                            case "rb":
+                                AddLEWord(0xF10B, ref machineCode);
+                                break;
+                            case "rc":
+                                AddLEWord(0xF10C, ref machineCode);
+                                break;
+                            case "rd":
+                                AddLEWord(0xF10D, ref machineCode);
+                                break;
+                        }
+                    }
+                    OK();
+                    break;
+                case "lda":
+                    if (token2.StartsWith("#"))
+                    {
+                        AddLEWord(0x0FA0, ref machineCode);
+                        AddLEWord(ResolveValueFromToken(token2), ref machineCode);
+                    }
+                    else if (token2.StartsWith("&"))
+                    {
+                        AddLEWord(0x0FA1, ref machineCode);
+                        AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    }
                     OK();
                     break;
             }

@@ -1,6 +1,3 @@
-start:	tin _data1
-		tin _data2
+start:	lda #41
+		tout rA
 		end
-_data:
-_data1:
-_data2:
