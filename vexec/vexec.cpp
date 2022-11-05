@@ -5,7 +5,7 @@
 #include <Windows.h>
 
 
-int main(int argc, const wchar_t* argv[])
+int wmain(int argc, const wchar_t* argv[])
 {
 	if (argc < 2) {
 		std::cerr << "Usage: vexec <binary file> <optional: clock speed in Hz> <optional: max cycles>" << std::endl;
@@ -14,7 +14,7 @@ int main(int argc, const wchar_t* argv[])
 	
 	try
 	{
-		HANDLE hProgramFile = CreateFileA((LPCSTR)argv[1], GENERIC_READ,
+		HANDLE hProgramFile = CreateFileW(argv[1], GENERIC_READ,
 			FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 		DWORD fileSize = GetFileSize(hProgramFile, NULL);
 
