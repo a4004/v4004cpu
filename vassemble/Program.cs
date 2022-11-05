@@ -102,7 +102,7 @@ namespace vassemble
 
                     if (line.StartsWith("_"))
                     {
-                        WriteTask($" -> Parsing line ${i}");
+                        WriteTask($"  -> Parsing line {i}");
                         WARN("Possible memory region within code section. Memory regions in source code are dangerous to use in this architecture.");
                     }
                     if (line.Contains(":"))
