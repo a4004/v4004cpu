@@ -130,7 +130,7 @@ namespace vassemble
                 Console.Error.WriteLine($"Failed to assemble the input file due to a critical failure. {e}");
             }
 
-            Console.WriteLine($"===> Build Finished\n\tErrors: {errorCount}\n\tWarnings: {warningCount}\n");
+            Console.WriteLine($"===> Build Finished with {errorCount} errors and {warningCount} warnings.");
         }
 
         static void AddLEWord(ushort data, ref List<byte> machineCode)
