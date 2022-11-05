@@ -33,7 +33,7 @@ void cpu::debug_dump() {
         registers.special.ip, registers.special.ir, registers.special.sp, registers.special.mdr, registers.special.mar, registers.special.status.zo, registers.special.status.ng, registers.special.status.of,
         registers.special.status.py, registers.rA, registers.rB, registers.rC, registers.rD, cache[0], cache[1], cache[2], cache[3], cache[4], cache[5], cache[6], cache[7]);
 }
-void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
+void cpu::execute(int cycles, mem& memory, int clock_speed_hz) {
     while (cycles > 0) {
         std::this_thread::sleep_for(std::chrono::milliseconds((int)((float)((float)1 / (float)clock_speed_hz) * 1000)));
         registers.special.ir = fetch_next_word(cycles, memory);
@@ -1110,14 +1110,14 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
     }
 }
 
-BYTE cpu::fetch_next_byte(unsigned int& cycles, mem& memory) {
+BYTE cpu::fetch_next_byte(int& cycles, mem& memory) {
     registers.special.mar = registers.special.ip;
     registers.special.mdr = memory.io_read(registers.special.mar);
     registers.special.ip++;
     cycles--;
     return registers.special.mdr;
 }
-WORD cpu::fetch_next_word(unsigned int& cycles, mem& memory) {
+WORD cpu::fetch_next_word(int& cycles, mem& memory) {
     registers.special.mar = registers.special.ip;
     registers.special.mdr = memory.io_read(registers.special.mar);
     registers.special.ip++;
@@ -1129,7 +1129,7 @@ WORD cpu::fetch_next_word(unsigned int& cycles, mem& memory) {
     return registers.special.mdr;
 }
 
-int cpu::write_word(unsigned int& cycles, mem& memory) {
+int cpu::write_word(int& cycles, mem& memory) {
     cache[0] = registers.special.mdr;
     cache[1] = registers.special.mdr >> 8;
     int result = 0;
@@ -1140,7 +1140,7 @@ int cpu::write_word(unsigned int& cycles, mem& memory) {
     cycles--;
     return result;
 }
-WORD cpu::read_word(unsigned int& cycles, mem& memory) {
+WORD cpu::read_word(int& cycles, mem& memory) {
     registers.special.mdr = memory.io_read(registers.special.mar);
     cycles--;
     registers.special.mdr |= (memory.io_read(registers.special.mar + 1) << 8);

@@ -84,7 +84,7 @@ namespace vassemble
                         continue;
 
                     string name = lines[i].Split(':')[0];
-                    ushort addr = (ushort)(lines.ToList().IndexOf(lines[i]) * 8);
+                    ushort addr = (ushort)(lines.ToList().IndexOf(lines[i]) * 4);
 
                     Console.WriteLine($"  -> Found Symbol: @{name} at 0x{addr.ToString("X4")}");
 

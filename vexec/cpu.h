@@ -35,17 +35,17 @@ class cpu {
 public:
     void reset_cpu(mem& memory);
     void debug_dump();
-    void execute(unsigned int cycles, mem& memory, int clock_speed_hz);
+    void execute(int cycles, mem& memory, int clock_speed_hz);
 private:
     void setFlagsAdd(WORD value, WORD a, WORD b);
     void setFlagsSub(WORD value, WORD a, WORD b);
     void setFlagsMul(WORD value, WORD a, WORD b);
     void setFlagsDiv(WORD value, WORD a, WORD b);
 
-    BYTE fetch_next_byte(unsigned int& cycles, mem& memory);
-    WORD fetch_next_word(unsigned int& cycles, mem& memory);
-    int write_word(unsigned int& cycles, mem& memory);
-    WORD read_word(unsigned int& cycles, mem& memory);
+    BYTE fetch_next_byte(int& cycles, mem& memory);
+    WORD fetch_next_word(int& cycles, mem& memory);
+    int write_word(int& cycles, mem& memory);
+    WORD read_word(int& cycles, mem& memory);
 
     V_REGISTERS registers;
     WORD cache[CACHE_SIZE];

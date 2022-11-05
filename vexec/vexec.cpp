@@ -24,12 +24,12 @@ int wmain(int argc, const wchar_t* argv[])
 			throw 1;
 		}
 
-		int clockSpeed = 1000;
-		unsigned int clockCycles = -1;
+		int clockSpeed = 0x1000;
+		int clockCycles = 0x7FFFFFFF;
 
 		if (argc > 2) {
 			try {
-				int cs = atoi((const char*)argv[2]);
+				int cs = _wtoi(argv[2]);
 				clockSpeed = cs;
 			}
 			catch (...)
@@ -40,7 +40,7 @@ int wmain(int argc, const wchar_t* argv[])
 
 		if (argc > 3) {
 			try {
-				int cc = atoi((const char*)argv[3]);
+				int cc = _wtoi(argv[3]);
 				clockCycles = cc;
 			}
 			catch (...)
@@ -49,7 +49,7 @@ int wmain(int argc, const wchar_t* argv[])
 			}
 		}
 
-		printf("Starting CPU emul_ator with the following properties:\n\tFile to Run: %s\n\tClock Speed: %d Hz\n\tCycle Limit: %d ticks\n\n...\n", (const char*)argv[1], clockSpeed, clockCycles);
+		printf("Starting CPU emulator with the following properties:\n\tFile to Run: %ls\n\tClock Speed: %d Hz\n\tCycle Limit: %d ticks\n\n...\n", argv[1], clockSpeed, clockCycles);
 
 		cpu cpu;
 		mem mem;
