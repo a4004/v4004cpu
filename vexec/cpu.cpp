@@ -891,7 +891,7 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
         case not_b:
             registers.rB = ~registers.rB;
             break;
-        case notc:
+        case not_c:
             registers.rC = ~registers.rC;
             break;
         case not_d:
@@ -1080,7 +1080,7 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
                 printf("STACK OVERFLOW ERROR! - Read operation occured at %04x outside minimum boundary.", registers.special.mar);
             }
             break;
-        case call:
+        case call_addr:
             cache[0] = fetch_next_wor_d(cycles, memory);
             cache[1] = registers.special.ip;
             registers.special.mdr = cache[1];

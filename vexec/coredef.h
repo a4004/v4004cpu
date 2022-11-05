@@ -23,11 +23,13 @@ using PWORD = WORD*;
 
 // Single Mnemonics
 #define end	0x0000			
-#define call 0x0100
 #define ret 0x0101
 #define nop 0x0300
 
 // Double Mnemonics
+
+#define call_addr 0x0100
+
 #define tin_addr 0xF000
 #define tout_imm 0xF100
 #define tout_addr 0xF101

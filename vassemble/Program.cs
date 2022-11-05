@@ -10,6 +10,8 @@ namespace vassemble
     internal class Program
     {
         static ConsoleColor defaultColor;
+        static int errorCount = 0;
+        static int warningCount = 0;
 
         static void OK()
         {
@@ -26,6 +28,7 @@ namespace vassemble
             Console.Write("FAIL");
             Console.ForegroundColor = defaultColor;
             Console.WriteLine($"] -> {message}");
+            errorCount += 1;
         }
         static void WARN(string message)
         {
@@ -34,6 +37,7 @@ namespace vassemble
             Console.Write("WARN");
             Console.ForegroundColor = defaultColor;
             Console.WriteLine($"] -> {message}");
+            warningCount += 1;
         }
         static void WriteTask(string task)
         {
@@ -70,7 +74,7 @@ namespace vassemble
                 string[] lines = File.ReadAllLines(args[0]);
                 OK();
 
-                List<ushort> machineCode = new List<ushort>();
+                List<byte> machineCode = new List<byte>();
                 Dictionary<string, ushort> symbolTable = new Dictionary<string, ushort>();
 
                 Console.WriteLine("Creating Symbol Table...");
@@ -91,6 +95,8 @@ namespace vassemble
                 WriteTask("Created Symbol Table");
                 OK();
 
+                Console.WriteLine("Processing the file...");
+
                 for (int i = 0; i < lines.Length; i++)
                 {
                     string line = lines[i].ToLower();
@@ -103,20 +109,59 @@ namespace vassemble
                     switch(tokens.Length)
                     {
                         case 1:
+                            SingleWord(tokens[0], ref machineCode);
                             break;
                         case 2:
                             break;
                         case 4:
                             break;
-                    }
-                    
+                    }                   
                 }
+
+                WriteTask("Assembling the program");
+
+                File.WriteAllBytes($"{args[0]}.v4004", machineCode.ToArray());
+
+                OK();
             }
             catch (Exception e)
             {
                 FAIL(e.Message);
                 Console.Error.WriteLine($"Failed to assemble the input file due to a critical failure. {e}");
             }
+
+            Console.WriteLine($"===> Build Finished\n\tErrors: {errorCount}\n\tWarnings: {warningCount}\n");
         }
+
+        static void AddLEWord(ushort data, ref List<byte> machineCode)
+        {
+            machineCode.Add((byte)(data & 0x00FF));
+            machineCode.Add((byte)((data & 0xFF00) >> 8));
+        }
+        static void SingleWord(string token, ref List<byte> machineCode)
+        {
+            WriteTask($"Parsing single token \"{token}\"");
+
+            switch (token)
+            {
+                case "end":
+                    AddLEWord(0xF100, ref machineCode);
+                    OK();
+                    break;
+                case "ret":
+                    AddLEWord(0x0101, ref machineCode);
+                    OK();
+                    break;
+                case "nop":
+                    AddLEWord(0x0300, ref machineCode);
+                    OK();
+                    break;
+                default:
+                    FAIL($"Unrecognized token: \"{token}\", skipping!");
+                    break;
+            }
+        }
+
+
     }
 }
