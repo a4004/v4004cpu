@@ -36,13 +36,13 @@ void cpu::debug_dump() {
 void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
     while (cycles > 0) {
         std::this_thread::sleep_for(std::chrono::milliseconds((int)((float)((float)1 / (float)clock_speed_hz) * 1000)));
-        registers.special.ir = fetch_next_wor_d(cycles, memory);
+        registers.special.ir = fetch_next_word(cycles, memory);
         switch (registers.special.ir) {
         case end:
             cycles = 0;
             break;
         case tin_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             printf("> ");
             cache[1] = _getch();
             printf("\n");
@@ -50,13 +50,13 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             memory.io_write(cache[0] + 1, 0x00);
             break;
         case tout_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             std::cout << (BYTE)cache[0];
             break;
         case tout_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             std::cout << (BYTE)cache[1];
             break;
         case tout_a:
@@ -72,68 +72,68 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             std::cout << (BYTE)registers.rD;
             break;
         case lda_imm:
-            registers.rA = fetch_next_wor_d(cycles, memory);
+            registers.rA = fetch_next_word(cycles, memory);
             break;
         case lda_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            registers.rA = read_wor_d(cycles, memory);
+            registers.rA = read_word(cycles, memory);
             break;
         case ldb_imm:
-            registers.rB = fetch_next_wor_d(cycles, memory);
+            registers.rB = fetch_next_word(cycles, memory);
             break;
         case ldb_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            registers.rC = read_wor_d(cycles, memory);
+            registers.rC = read_word(cycles, memory);
             break;
         case ldc_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            registers.rC = read_wor_d(cycles, memory);
+            registers.rC = read_word(cycles, memory);
             break;
         case ldd_imm:
-            registers.rD = fetch_next_wor_d(cycles, memory);
+            registers.rD = fetch_next_word(cycles, memory);
             break;
         case ldd_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            registers.rD = read_wor_d(cycles, memory);
+            registers.rD = read_word(cycles, memory);
             break;
         case sta_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
             registers.special.mdr = registers.rA;
-            write_wor_d(cycles, memory);
+            write_word(cycles, memory);
             break;
         case stb_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
             registers.special.mdr = registers.rB;
-            write_wor_d(cycles, memory);
+            write_word(cycles, memory);
             break;
         case stc_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
             registers.special.mdr = registers.rC;
-            write_wor_d(cycles, memory);
+            write_word(cycles, memory);
             break;
         case std_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
             registers.special.mdr = registers.rD;
-            write_wor_d(cycles, memory);
+            write_word(cycles, memory);
             break;
 
         case add_a_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             setFlagsAdd(registers.rA + cache[0], registers.rA, cache[0]);
             registers.rA += cache[0];
             break;
         case add_a_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             setFlagsAdd(registers.rA + cache[1], registers.rA, cache[1]);
             registers.rA += cache[1];
             break;
@@ -154,14 +154,14 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rA += registers.rD;
             break;
         case add_b_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             setFlagsAdd(registers.rB + cache[0], registers.rB, cache[0]);
             registers.rB += cache[0];
             break;
         case add_b_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             setFlagsAdd(registers.rB + cache[1], registers.rB, cache[1]);
             registers.rB += cache[1];
             break;
@@ -182,14 +182,14 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rB += registers.rD;
             break;
         case add_c_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             setFlagsAdd(registers.rC + cache[0], registers.rC, cache[0]);
             registers.rC += cache[0];
             break;
         case add_c_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             setFlagsAdd(registers.rC + cache[1], registers.rC, cache[1]);
             registers.rC += cache[1];
             break;
@@ -210,14 +210,14 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rC += registers.rD;
             break;
         case add_d_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             setFlagsAdd(registers.rD + cache[0], registers.rD, cache[0]);
             registers.rD += cache[0];
             break;
         case add_d_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             setFlagsAdd(registers.rD + cache[1], registers.rD, cache[1]);
             registers.rD += cache[1];
             break;
@@ -238,14 +238,14 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rD += registers.rD;
             break;
         case sub_a_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             setFlagsSub(registers.rA - cache[0], registers.rA, cache[0]);
             registers.rA -= cache[0];
             break;
         case sub_a_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             setFlagsSub(registers.rA - cache[1], registers.rA, cache[1]);
             registers.rA -= cache[1];
             break;
@@ -266,14 +266,14 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rA -= registers.rD;
             break;
         case sub_b_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             setFlagsSub(registers.rB - cache[0], registers.rB, cache[0]);
             registers.rB -= cache[0];
             break;
         case sub_b_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             setFlagsSub(registers.rB - cache[1], registers.rB, cache[1]);
             registers.rB -= cache[1];
             break;
@@ -294,14 +294,14 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rB -= registers.rD;
             break;
         case sub_c_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             setFlagsSub(registers.rC - cache[0], registers.rC, cache[0]);
             registers.rC -= cache[0];
             break;
         case sub_c_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             setFlagsSub(registers.rC - cache[1], registers.rC, cache[1]);
             registers.rC -= cache[1];
             break;
@@ -322,14 +322,14 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rC -= registers.rD;
             break;
         case sub_d_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             setFlagsSub(registers.rD - cache[0], registers.rD, cache[0]);
             registers.rD -= cache[0];
             break;
         case sub_d_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             setFlagsSub(registers.rD - cache[1], registers.rD, cache[1]);
             registers.rD -= cache[1];
             break;
@@ -350,14 +350,14 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rD -= registers.rD;
             break;
         case div_a_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             setFlagsDiv(registers.rA / cache[0], registers.rA, cache[0]);
             registers.rA /= cache[0];
             break;
         case div_a_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             setFlagsDiv(registers.rA / cache[1], registers.rA, cache[1]);
             registers.rA /= cache[1];
             break;
@@ -378,14 +378,14 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rA /= registers.rD;
             break;
         case div_b_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             setFlagsDiv(registers.rB / cache[0], registers.rB, cache[0]);
             registers.rB /= cache[0];
             break;
         case div_b_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             setFlagsDiv(registers.rB / cache[1], registers.rB, cache[1]);
             registers.rB /= cache[1];
             break;
@@ -406,14 +406,14 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rB /= registers.rD;
             break;
         case div_c_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             setFlagsDiv(registers.rC / cache[0], registers.rC, cache[0]);
             registers.rC /= cache[0];
             break;
         case div_c_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             setFlagsDiv(registers.rC / cache[1], registers.rC, cache[1]);
             registers.rC /= cache[1];
             break;
@@ -434,14 +434,14 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rC /= registers.rD;
             break;
         case div_d_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             setFlagsDiv(registers.rD / cache[0], registers.rD, cache[0]);
             registers.rD /= cache[0];
             break;
         case div_d_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             setFlagsDiv(registers.rD / cache[1], registers.rD, cache[1]);
             registers.rD /= cache[1];
             break;
@@ -462,14 +462,14 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rD /= registers.rD;
             break;
         case mul_a_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             setFlagsMul(registers.rA * cache[0], registers.rA, cache[0]);
             registers.rA *= cache[0];
             break;
         case mul_a_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             setFlagsMul(registers.rA * cache[1], registers.rA, cache[1]);
             registers.rA *= cache[1];
             break;
@@ -490,14 +490,14 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rA *= registers.rD;
             break;
         case mul_b_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             setFlagsMul(registers.rB * cache[0], registers.rB, cache[0]);
             registers.rB *= cache[0];
             break;
         case mul_b_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             setFlagsMul(registers.rB * cache[1], registers.rB, cache[1]);
             registers.rB *= cache[1];
             break;
@@ -518,14 +518,14 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rB *= registers.rD;
             break;
         case mul_c_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             setFlagsMul(registers.rC * cache[0], registers.rC, cache[0]);
             registers.rC *= cache[0];
             break;
         case mul_c_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             setFlagsMul(registers.rC * cache[1], registers.rC, cache[1]);
             registers.rC *= cache[1];
             break;
@@ -546,14 +546,14 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rC *= registers.rD;
             break;
         case mul_d_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             setFlagsMul(registers.rD * cache[0], registers.rD, cache[0]);
             registers.rD *= cache[0];
             break;
         case mul_d_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             setFlagsMul(registers.rD * cache[1], registers.rD, cache[1]);
             registers.rD *= cache[1];
             break;
@@ -574,13 +574,13 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rD *= registers.rD;
             break;
         case and_a_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rA &= cache[0];
             break;
         case and_a_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             registers.rA &= cache[1];
             break;
         case and_a_a:
@@ -596,13 +596,13 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rA &= registers.rD;
             break;
         case and_b_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rB &= cache[0];
             break;
         case and_b_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             registers.rB &= cache[1];
             break;
         case and_b_a:
@@ -618,13 +618,13 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rB &= registers.rD;
             break;
         case and_c_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rC &= cache[0];
             break;
         case and_c_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             registers.rC &= cache[1];
             break;
         case and_c_a:
@@ -640,13 +640,13 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rC &= registers.rD;
             break;
         case and_d_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rD &= cache[0];
             break;
         case and_d_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             registers.rD &= cache[1];
             break;
         case and_d_a:
@@ -662,13 +662,13 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rD &= registers.rD;
             break;
         case or_a_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rA |= cache[0];
             break;
         case or_a_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             registers.rA |= cache[1];
             break;
         case or_a_a:
@@ -684,13 +684,13 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rA |= registers.rD;
             break;
         case or_b_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rB |= cache[0];
             break;
         case or_b_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             registers.rB |= cache[1];
             break;
         case or_b_a:
@@ -706,13 +706,13 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rB |= registers.rD;
             break;
         case or_c_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rC |= cache[0];
             break;
         case or_c_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             registers.rC |= cache[1];
             break;
         case or_c_a:
@@ -728,13 +728,13 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rC |= registers.rD;
             break;
         case or_d_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rD |= cache[0];
             break;
         case or_d_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             registers.rD |= cache[1];
             break;
         case or_d_a:
@@ -750,13 +750,13 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rD |= registers.rD;
             break;
         case xor_a_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rA -= cache[0];
             break;
         case xor_a_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             registers.rA -= cache[1];
             break;
         case xor_a_a:
@@ -772,13 +772,13 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rA ^= registers.rD;
             break;
         case xor_b_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rB ^= cache[0];
             break;
         case xor_b_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             registers.rB ^= cache[1];
             break;
         case xor_b_a:
@@ -794,13 +794,13 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rB ^= registers.rD;
             break;
         case xor_c_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rC ^= cache[0];
             break;
         case xor_c_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             registers.rC ^= cache[1];
             break;
         case xor_c_a:
@@ -816,13 +816,13 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rC ^= registers.rD;
             break;
         case xor_d_imm:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rD ^= cache[0];
             break;
         case xor_d_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.mar = cache[0];
-            cache[1] = read_wor_d(cycles, memory);
+            cache[1] = read_word(cycles, memory);
             registers.rD ^= cache[1];
             break;
         case xor_d_a:
@@ -898,35 +898,35 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             registers.rD = ~registers.rD;
             break;
         case lsh_a:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rA = (registers.rA << cache[0]);
             break;
         case rsh_a:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rA = (registers.rA >> cache[0]);
             break;
         case lsh_b:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rB = (registers.rB << cache[0]);
             break;
         case rsh_b:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rB = (registers.rB >> cache[0]);
             break;
         case lsh_c:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rC = (registers.rC << cache[0]);
             break;
         case rsh_c:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rC = (registers.rC >> cache[0]);
             break;
         case lsh_d:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rD = (registers.rD << cache[0]);
             break;
         case rsh_d:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.rD = (registers.rD >> cache[0]);
             break;
         case cmp_a_a:
@@ -978,30 +978,30 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
             setFlagsSub(registers.rD + registers.rD, registers.rD, registers.rD);
             break;
         case jmp_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             registers.special.ip = cache[0];
             break;
         case jmz_addr:
             if (registers.special.status.zo) {
-                cache[0] = fetch_next_wor_d(cycles, memory);
+                cache[0] = fetch_next_word(cycles, memory);
                 registers.special.ip = cache[0];
             }
             break;
         case jmn_addr:
             if (registers.special.status.ng) {
-                cache[0] = fetch_next_wor_d(cycles, memory);
+                cache[0] = fetch_next_word(cycles, memory);
                 registers.special.ip = cache[0];
             }
             break;
         case jmo_addr:
             if (registers.special.status.of) {
-                cache[0] = fetch_next_wor_d(cycles, memory);
+                cache[0] = fetch_next_word(cycles, memory);
                 registers.special.ip = cache[0];
             }
             break;
         case jpp_addr:
             if (registers.special.status.py) {
-                cache[0] = fetch_next_wor_d(cycles, memory);
+                cache[0] = fetch_next_word(cycles, memory);
                 registers.special.ip = cache[0];
             }
             break;
@@ -1011,7 +1011,7 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
         case push_a:
             registers.special.mdr = registers.rA;
             registers.special.mar = registers.special.sp;
-            write_wor_d(cycles, memory);
+            write_word(cycles, memory);
             registers.special.sp -= 2;
             if (registers.special.sp < DATA_SIZE - STACK_SIZE) {
                 printf("STACK OVERFLOW ERROR! - Write operation occured at %04x outside minimum boundary.", registers.special.mar);
@@ -1020,7 +1020,7 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
         case pop_a:
             registers.special.sp += 2;
             registers.special.mar = registers.special.sp;
-            cache[0] = read_wor_d(cycles, memory);
+            cache[0] = read_word(cycles, memory);
             registers.rA = cache[0];
             if (registers.special.sp >= DATA_SIZE - 1) {
                 printf("STACK OVERFLOW ERROR! - Read operation occured at %04x outside minimum boundary.", registers.special.mar);
@@ -1029,7 +1029,7 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
         case push_b:
             registers.special.mdr = registers.rB;
             registers.special.mar = registers.special.sp;
-            write_wor_d(cycles, memory);
+            write_word(cycles, memory);
             registers.special.sp -= 2;
             if (registers.special.sp < DATA_SIZE - STACK_SIZE) {
                 printf("STACK OVERFLOW ERROR! - Write operation occured at %04x outside minimum boundary.", registers.special.mar);
@@ -1038,7 +1038,7 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
         case pop_b:
             registers.special.sp += 2;
             registers.special.mar = registers.special.sp;
-            cache[0] = read_wor_d(cycles, memory);
+            cache[0] = read_word(cycles, memory);
             registers.rB = cache[0];
             if (registers.special.sp >= DATA_SIZE - 1) {
                 printf("STACK OVERFLOW ERROR! - Read operation occured at %04x outside minimum boundary.", registers.special.mar);
@@ -1047,7 +1047,7 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
         case push_c:
             registers.special.mdr = registers.rC;
             registers.special.mar = registers.special.sp;
-            write_wor_d(cycles, memory);
+            write_word(cycles, memory);
             registers.special.sp -= 2;
             if (registers.special.sp < DATA_SIZE - STACK_SIZE) {
                 printf("STACK OVERFLOW ERROR! - Write operation occured at %04x outside minimum boundary.", registers.special.mar);
@@ -1056,7 +1056,7 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
         case pop_c:
             registers.special.sp += 2;
             registers.special.mar = registers.special.sp;
-            cache[0] = read_wor_d(cycles, memory);
+            cache[0] = read_word(cycles, memory);
             registers.rC = cache[0];
             if (registers.special.sp >= DATA_SIZE - 1) {
                 printf("STACK OVERFLOW ERROR! - Read operation occured at %04x outside minimum boundary.", registers.special.mar);
@@ -1065,7 +1065,7 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
         case push_d:
             registers.special.mdr = registers.rD;
             registers.special.mar = registers.special.sp;
-            write_wor_d(cycles, memory);
+            write_word(cycles, memory);
             registers.special.sp -= 2;
             if (registers.special.sp < DATA_SIZE - STACK_SIZE) {
                 printf("STACK OVERFLOW ERROR! - Write operation occured at %04x outside minimum boundary.", registers.special.mar);
@@ -1074,18 +1074,18 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
         case pop_d:
             registers.special.sp += 2;
             registers.special.mar = registers.special.sp;
-            cache[0] = read_wor_d(cycles, memory);
+            cache[0] = read_word(cycles, memory);
             registers.rD = cache[0];
             if (registers.special.sp >= DATA_SIZE - 1) {
                 printf("STACK OVERFLOW ERROR! - Read operation occured at %04x outside minimum boundary.", registers.special.mar);
             }
             break;
         case call_addr:
-            cache[0] = fetch_next_wor_d(cycles, memory);
+            cache[0] = fetch_next_word(cycles, memory);
             cache[1] = registers.special.ip;
             registers.special.mdr = cache[1];
             registers.special.mar = registers.special.sp;
-            write_wor_d(cycles, memory);
+            write_word(cycles, memory);
             registers.special.sp -= 2;
             if (registers.special.sp < DATA_SIZE - STACK_SIZE) {
                 printf("STACK OVERFLOW ERROR! - Write operation occured at %04x outside minimum boundary.", registers.special.mar);
@@ -1095,7 +1095,7 @@ void cpu::execute(unsigned int cycles, mem& memory, int clock_speed_hz) {
         case ret:
             registers.special.sp += 2;
             registers.special.mar = registers.special.sp;
-            cache[0] = read_wor_d(cycles, memory);
+            cache[0] = read_word(cycles, memory);
             registers.special.ip = cache[0];
             if (registers.special.sp >= DATA_SIZE - 1) {
                 printf("STACK OVERFLOW ERROR! - Read operation occured at %04x outside minimum boundary.", registers.special.mar);
@@ -1117,7 +1117,7 @@ BYTE cpu::fetch_next_byte(unsigned int& cycles, mem& memory) {
     cycles--;
     return registers.special.mdr;
 }
-WORD cpu::fetch_next_wor_d(unsigned int& cycles, mem& memory) {
+WORD cpu::fetch_next_word(unsigned int& cycles, mem& memory) {
     registers.special.mar = registers.special.ip;
     registers.special.mdr = memory.io_read(registers.special.mar);
     registers.special.ip++;
@@ -1129,7 +1129,7 @@ WORD cpu::fetch_next_wor_d(unsigned int& cycles, mem& memory) {
     return registers.special.mdr;
 }
 
-int cpu::write_wor_d(unsigned int& cycles, mem& memory) {
+int cpu::write_word(unsigned int& cycles, mem& memory) {
     cache[0] = registers.special.mdr;
     cache[1] = registers.special.mdr >> 8;
     int result = 0;
@@ -1140,7 +1140,7 @@ int cpu::write_wor_d(unsigned int& cycles, mem& memory) {
     cycles--;
     return result;
 }
-WORD cpu::read_wor_d(unsigned int& cycles, mem& memory) {
+WORD cpu::read_word(unsigned int& cycles, mem& memory) {
     registers.special.mdr = memory.io_read(registers.special.mar);
     cycles--;
     registers.special.mdr |= (memory.io_read(registers.special.mar + 1) << 8);

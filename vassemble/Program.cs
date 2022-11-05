@@ -9,6 +9,7 @@ namespace vassemble
 {
     internal class Program
     {
+        static Dictionary<string, ushort> symbolTable = new Dictionary<string, ushort>();
         static ConsoleColor defaultColor;
         static int errorCount = 0;
         static int warningCount = 0;
@@ -75,8 +76,6 @@ namespace vassemble
                 OK();
 
                 List<byte> machineCode = new List<byte>();
-                Dictionary<string, ushort> symbolTable = new Dictionary<string, ushort>();
-
                 Console.WriteLine("Creating Symbol Table...");
 
                 for (int i = 0; i < lines.Length; i++)
@@ -85,7 +84,7 @@ namespace vassemble
                         continue;
 
                     string name = lines[i].Split(':')[0];
-                    ushort addr = (ushort)(lines.ToList().IndexOf(lines[i]) * 4);
+                    ushort addr = (ushort)(lines.ToList().IndexOf(lines[i]) * 8);
 
                     Console.WriteLine($"  -> Found Symbol: @{name} at 0x{addr.ToString("X4")}");
 
@@ -109,18 +108,23 @@ namespace vassemble
                     switch(tokens.Length)
                     {
                         case 1:
-                            SingleWord(tokens[0], ref machineCode);
+                            SingleToken(tokens[0].Trim(), ref machineCode);
                             break;
                         case 2:
+                            DoubleToken(tokens[0].Trim(), tokens[1].Trim(), ref machineCode);
                             break;
-                        case 4:
+                        case 3:
                             break;
                     }                   
                 }
 
                 WriteTask("Assembling the program");
 
-                File.WriteAllBytes($"{args[0]}.v4004", machineCode.ToArray());
+                ushort size = (ushort)machineCode.ToArray().Length;
+                machineCode.Insert(0, (byte)(size & 0x00FF));
+                machineCode.Insert(1, (byte)((size & 0xFF00) >> 8));
+
+                File.WriteAllBytes($"{args[1]}", machineCode.ToArray());
 
                 OK();
             }
@@ -138,14 +142,44 @@ namespace vassemble
             machineCode.Add((byte)(data & 0x00FF));
             machineCode.Add((byte)((data & 0xFF00) >> 8));
         }
-        static void SingleWord(string token, ref List<byte> machineCode)
+
+        static ushort ResolveAddressFromToken(string token)
+        {
+            try
+            {
+                ushort result = ushort.Parse(token.Replace("&", ""), System.Globalization.NumberStyles.HexNumber);
+                return result;
+            }
+            catch
+            {
+                if (symbolTable.TryGetValue(token, out ushort result))
+                    return result;
+                else
+                    throw new ApplicationException($"Could not resolve the memory address from token \"{token}\"!");
+            }
+        }
+
+        static void DoubleToken(string token1, string token2, ref List<byte> machineCode)
+        {
+            WriteTask($"Parsing double token \"{token1} {token2}\"");
+
+            switch (token1)
+            {
+                case "tin":
+                    AddLEWord(0xF000, ref machineCode);
+                    AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    OK();
+                    break;
+            }
+        }
+        static void SingleToken(string token, ref List<byte> machineCode)
         {
             WriteTask($"Parsing single token \"{token}\"");
 
             switch (token)
             {
                 case "end":
-                    AddLEWord(0xF100, ref machineCode);
+                    AddLEWord(0x0000, ref machineCode);
                     OK();
                     break;
                 case "ret":
