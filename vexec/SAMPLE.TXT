@@ -1,3 +1,9 @@
-start:	lda #41
-		tout rA
+start:	tin _data1
+		lda _data1
+		call dosft
+		sta _data2
 		end
+dosft:  lsh rA
+		ret
+_data1:
+_data2:

@@ -176,6 +176,11 @@ namespace vassemble
 
             switch (token1)
             {
+                case "call":
+                    AddLEWord(0x0100, ref machineCode);
+                    AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    OK();
+                    break;
                 case "tin":
                     AddLEWord(0xF000, ref machineCode);
                     AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
@@ -187,7 +192,7 @@ namespace vassemble
                         AddLEWord(0xF100, ref machineCode);
                         AddLEWord(ResolveValueFromToken(token2), ref machineCode);
                     }
-                    else if (token2.StartsWith("&"))
+                    else if (token2.StartsWith("&") || token2.StartsWith("_"))
                     {
                         AddLEWord(0xF101, ref machineCode);
                         AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
@@ -208,6 +213,9 @@ namespace vassemble
                             case "rd":
                                 AddLEWord(0xF10D, ref machineCode);
                                 break;
+                            default:
+                                FAIL($"Unrecognized token operand: \"{token2}\", skipping!");
+                                break;
                         }
                     }
                     OK();
@@ -218,12 +226,219 @@ namespace vassemble
                         AddLEWord(0x0FA0, ref machineCode);
                         AddLEWord(ResolveValueFromToken(token2), ref machineCode);
                     }
-                    else if (token2.StartsWith("&"))
+                    else if (token2.StartsWith("&") || token2.StartsWith("_"))
                     {
                         AddLEWord(0x0FA1, ref machineCode);
                         AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
                     }
                     OK();
+                    break;
+                case "ldb":
+                    if (token2.StartsWith("#"))
+                    {
+                        AddLEWord(0x0FB0, ref machineCode);
+                        AddLEWord(ResolveValueFromToken(token2), ref machineCode);
+                    }
+                    else if (token2.StartsWith("&") || token2.StartsWith("_"))
+                    {
+                        AddLEWord(0x0FB1, ref machineCode);
+                        AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    }
+                    OK();
+                    break;
+                case "ldc":
+                    if (token2.StartsWith("#"))
+                    {
+                        AddLEWord(0x0FC0, ref machineCode);
+                        AddLEWord(ResolveValueFromToken(token2), ref machineCode);
+                    }
+                    else if (token2.StartsWith("&") || token2.StartsWith("_"))
+                    {
+                        AddLEWord(0x0FC1, ref machineCode);
+                        AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    }
+                    OK();
+                    break;
+                case "ldd":
+                    if (token2.StartsWith("#"))
+                    {
+                        AddLEWord(0x0FD0, ref machineCode);
+                        AddLEWord(ResolveValueFromToken(token2), ref machineCode);
+                    }
+                    else if (token2.StartsWith("&") || token2.StartsWith("_"))
+                    {
+                        AddLEWord(0x0FD1, ref machineCode);
+                        AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    }
+                    OK();
+                    break;
+                case "sta":
+                    AddLEWord(0x0EA1, ref machineCode);
+                    AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    OK();
+                    break;
+                case "stb":
+                    AddLEWord(0x0EB1, ref machineCode);
+                    AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    OK();
+                    break;
+                case "stc":
+                    AddLEWord(0x0EC1, ref machineCode);
+                    AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    OK();
+                    break;
+                case "std":
+                    AddLEWord(0x0ED1, ref machineCode);
+                    AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    OK();
+                    break;
+                case "push":
+                    switch (token2)
+                    {
+                        case "ra":
+                            AddLEWord(0x020A, ref machineCode);
+                            OK();
+                            break;
+                        case "rb":
+                            AddLEWord(0x020B, ref machineCode);
+                            OK();
+                            break;
+                        case "rc":
+                            AddLEWord(0x020C, ref machineCode);
+                            OK();
+                            break;
+                        case "rd":
+                            AddLEWord(0x020D, ref machineCode);
+                            OK();
+                            break;
+                        default:
+                            FAIL($"Unrecognized token operand: \"{token2}\", skipping!");
+                            break;
+                    }
+                    break;
+                case "pop":
+                    switch (token2)
+                    {
+                        case "ra":
+                            AddLEWord(0x021A, ref machineCode);
+                            OK();
+                            break;
+                        case "rb":
+                            AddLEWord(0x021B, ref machineCode);
+                            OK();
+                            break;
+                        case "rc":
+                            AddLEWord(0x021C, ref machineCode);
+                            OK();
+                            break;
+                        case "rd":
+                            AddLEWord(0x021D, ref machineCode);
+                            OK();
+                            break;
+                        default:
+                            FAIL($"Unrecognized token operand: \"{token2}\", skipping!");
+                            break;
+                    }
+                    break;
+                case "jmp":
+                    AddLEWord(0x03F1, ref machineCode);
+                    AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    OK();
+                    break;
+                case "jmz":
+                    AddLEWord(0x03E1, ref machineCode);
+                    AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    OK();
+                    break;
+                case "jmn":
+                    AddLEWord(0x03D1, ref machineCode);
+                    AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    OK();
+                    break;
+                case "jmo":
+                    AddLEWord(0x03C1, ref machineCode);
+                    AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    OK();
+                    break;
+                case "jpp":
+                    AddLEWord(0x03B1, ref machineCode);
+                    AddLEWord(ResolveAddressFromToken(token2), ref machineCode);
+                    OK();
+                    break;
+                case "not":
+                    switch (token2)
+                    {
+                        case "ra":
+                            AddLEWord(0x050A, ref machineCode);
+                            OK();
+                            break;
+                        case "rb":
+                            AddLEWord(0x050B, ref machineCode);
+                            OK();
+                            break;
+                        case "rc":
+                            AddLEWord(0x050C, ref machineCode);
+                            OK();
+                            break;
+                        case "rd":
+                            AddLEWord(0x050D, ref machineCode);
+                            OK();
+                            break;
+                        default:
+                            FAIL($"Unrecognized token operand: \"{token2}\", skipping!");
+                            break;
+                    }
+                    break;
+                case "lsh":
+                    switch (token2)
+                    {
+                        case "ra":
+                            AddLEWord(0x05AA, ref machineCode);
+                            OK();
+                            break;
+                        case "rb":
+                            AddLEWord(0x05AB, ref machineCode);
+                            OK();
+                            break;
+                        case "rc":
+                            AddLEWord(0x05AC, ref machineCode);
+                            OK();
+                            break;
+                        case "rd":
+                            AddLEWord(0x05AD, ref machineCode);
+                            OK();
+                            break;
+                        default:
+                            FAIL($"Unrecognized token operand: \"{token2}\", skipping!");
+                            break;
+                    }
+                    break;
+                case "rsh":
+                    switch (token2)
+                    {
+                        case "ra":
+                            AddLEWord(0x05BA, ref machineCode);
+                            OK();
+                            break;
+                        case "rb":
+                            AddLEWord(0x05BB, ref machineCode);
+                            OK();
+                            break;
+                        case "rc":
+                            AddLEWord(0x05BC, ref machineCode);
+                            OK();
+                            break;
+                        case "rd":
+                            AddLEWord(0x05BD, ref machineCode);
+                            OK();
+                            break;
+                        default:
+                            FAIL($"Unrecognized token operand: \"{token2}\", skipping!");
+                            break;
+                    }
+                    break;
+                default:
+                    FAIL($"Unrecognized token: \"{token1}\", skipping!");
                     break;
             }
         }

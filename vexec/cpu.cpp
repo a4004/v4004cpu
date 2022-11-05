@@ -898,36 +898,28 @@ void cpu::execute(int cycles, mem& memory, int clock_speed_hz) {
             registers.rD = ~registers.rD;
             break;
         case lsh_a:
-            cache[0] = fetch_next_word(cycles, memory);
-            registers.rA = (registers.rA << cache[0]);
+            registers.rA = (registers.rA << 1);
             break;
         case rsh_a:
-            cache[0] = fetch_next_word(cycles, memory);
-            registers.rA = (registers.rA >> cache[0]);
+            registers.rA = (registers.rA >> 1);
             break;
         case lsh_b:
-            cache[0] = fetch_next_word(cycles, memory);
-            registers.rB = (registers.rB << cache[0]);
+            registers.rB = (registers.rB << 1);
             break;
         case rsh_b:
-            cache[0] = fetch_next_word(cycles, memory);
-            registers.rB = (registers.rB >> cache[0]);
+            registers.rB = (registers.rB >> 1);
             break;
         case lsh_c:
-            cache[0] = fetch_next_word(cycles, memory);
-            registers.rC = (registers.rC << cache[0]);
+            registers.rC = (registers.rC << 1);
             break;
         case rsh_c:
-            cache[0] = fetch_next_word(cycles, memory);
-            registers.rC = (registers.rC >> cache[0]);
+            registers.rC = (registers.rC >> 1);
             break;
         case lsh_d:
-            cache[0] = fetch_next_word(cycles, memory);
-            registers.rD = (registers.rD << cache[0]);
+            registers.rD = (registers.rD << 1);
             break;
         case rsh_d:
-            cache[0] = fetch_next_word(cycles, memory);
-            registers.rD = (registers.rD >> cache[0]);
+            registers.rD = (registers.rD >> 1);
             break;
         case cmp_a_a:
             setFlagsSub(registers.rA + registers.rA, registers.rA, registers.rA);
@@ -1136,14 +1128,14 @@ int cpu::write_word(int& cycles, mem& memory) {
     cycles--;
     result += memory.io_write(registers.special.mar, cache[0] & 0xFF);
     cycles--;
-    result += memory.io_write(registers.special.mar, cache[1] & 0xFF);
+    result += memory.io_write(registers.special.mar + 1, cache[1] & 0xFF);
     cycles--;
     return result;
 }
 WORD cpu::read_word(int& cycles, mem& memory) {
     registers.special.mdr = memory.io_read(registers.special.mar);
     cycles--;
-    registers.special.mdr |= (memory.io_read(registers.special.mar + 1) << 8);
+    registers.special.mdr |= ((WORD)memory.io_read(registers.special.mar + 1)) << 8;
     cycles--;
     return registers.special.mdr;
 }
