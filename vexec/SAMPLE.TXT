@@ -4,8 +4,6 @@ start:	tin data1
 		tin data4
 		tin data5
 		end
-data1:
-data2:
-data3:
-data4:
-data5:
+_data:
+_data1:
+_data2:

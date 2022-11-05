@@ -99,7 +99,12 @@ namespace vassemble
                 for (int i = 0; i < lines.Length; i++)
                 {
                     string line = lines[i].ToLower();
-                     
+
+                    if (line.StartsWith("_"))
+                    {
+                        WriteTask($" -> Parsing line ${i}");
+                        WARN("Possible memory region within code section. Memory regions in source code are dangerous to use in this architecture.");
+                    }
                     if (line.Contains(":"))
                         line = line.Split(':')[1].Trim();
 
@@ -161,7 +166,7 @@ namespace vassemble
 
         static void DoubleToken(string token1, string token2, ref List<byte> machineCode)
         {
-            WriteTask($"Parsing double token \"{token1} {token2}\"");
+            WriteTask($"  -> Parsing double token \"{token1} {token2}\"");
 
             switch (token1)
             {
@@ -174,7 +179,7 @@ namespace vassemble
         }
         static void SingleToken(string token, ref List<byte> machineCode)
         {
-            WriteTask($"Parsing single token \"{token}\"");
+            WriteTask($"  -> Parsing single token \"{token}\"");
 
             switch (token)
             {
