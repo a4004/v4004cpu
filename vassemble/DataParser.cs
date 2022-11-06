@@ -12,7 +12,15 @@ namespace vassemble
 
         public static ushort ResolveValueFromToken(string token)
         {
-            ushort result = ushort.Parse(token.Replace("#", ""), System.Globalization.NumberStyles.HexNumber);
+            ushort result = 0;
+            if (token.StartsWith("#"))
+                result = ushort.Parse(token.Replace("#", ""), System.Globalization.NumberStyles.HexNumber);
+            else if (token.StartsWith("'"))
+            {
+                Console.Write(token);
+                result = Encoding.ASCII.GetBytes(token.Replace("'", ""))[0];
+            }
+               
             return result;
         }
 

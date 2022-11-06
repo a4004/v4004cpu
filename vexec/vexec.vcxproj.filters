@@ -27,7 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="V4004-ISA.TXT" />
-    <Text Include="SAMPLE.TXT" />
+    <Text Include="SAMPLE_PROGRAM.VASM" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="coredef.h">

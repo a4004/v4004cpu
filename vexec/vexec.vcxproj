@@ -132,7 +132,7 @@
     <ClCompile Include="vexec.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="SAMPLE.TXT" />
+    <Text Include="SAMPLE_PROGRAM.VASM" />
     <Text Include="V4004-ISA.TXT" />
   </ItemGroup>
   <ItemGroup>

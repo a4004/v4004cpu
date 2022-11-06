@@ -1,0 +1,14 @@
+start:	tout 'H'
+		tout 'e'
+		tout 'l'
+		tout 'l'
+		tout 'o'
+		tout #20
+		tout 'W'
+		tout 'o'
+		tout 'r'
+		tout 'l'
+		tout 'd'
+		tout '!'
+		tout #0d
+		tout #0a
