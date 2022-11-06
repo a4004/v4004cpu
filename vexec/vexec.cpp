@@ -4,6 +4,17 @@
 #include "cpu.h"
 #include <Windows.h>
 
+bool allowExecute = true;
+
+BOOL WINAPI ConsoleHandler(DWORD signal) {
+
+	if (signal == CTRL_C_EVENT) {
+		printf("\n=== CPU INTERRUPTED! HALTING PROGRAM ===\n");
+		allowExecute = false;
+	}
+
+	return TRUE;
+}
 
 int wmain(int argc, const wchar_t* argv[])
 {
@@ -61,7 +72,11 @@ int wmain(int argc, const wchar_t* argv[])
 		cpu.debug_dump();
 		mem.debug_dump();
 
-		cpu.execute(clockCycles, mem, clockSpeed);
+		if (!SetConsoleCtrlHandler(ConsoleHandler, TRUE)) {
+			printf("NOTICE: Failed to assign a CTRL-C exit handler. You may need to kill the program using task manager if it enters an indefinite loop.\n\n");
+		}
+
+		cpu.execute(clockCycles, mem, clockSpeed, allowExecute);
 
 		printf("\\/ PROGRAM FINISHED EXECUTING. DUMPING CPU AND MEMORY INFORMATION BELOW \\/\n");
 		cpu.debug_dump();

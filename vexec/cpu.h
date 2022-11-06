@@ -35,7 +35,7 @@ class cpu {
 public:
     void reset_cpu(mem& memory);
     void debug_dump();
-    void execute(int cycles, mem& memory, int clock_speed_hz);
+    void execute(int cycles, mem& memory, int clock_speed_hz, bool& allowExecute);
 private:
     void setFlagsAdd(WORD value, WORD a, WORD b);
     void setFlagsSub(WORD value, WORD a, WORD b);

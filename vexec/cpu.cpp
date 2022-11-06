@@ -33,11 +33,11 @@ void cpu::debug_dump() {
         registers.special.ip, registers.special.ir, registers.special.sp, registers.special.mdr, registers.special.mar, registers.special.status.zo, registers.special.status.ng, registers.special.status.of,
         registers.special.status.py, registers.rA, registers.rB, registers.rC, registers.rD, cache[0], cache[1], cache[2], cache[3], cache[4], cache[5], cache[6], cache[7]);
 }
-void cpu::execute(int cycles, mem& memory, int clock_speed_hz) {
-    while (cycles > 0) {
+void cpu::execute(int cycles, mem& memory, int clock_speed_hz, bool& allowExecute) {
+    while (cycles > 0 && allowExecute) {
         std::this_thread::sleep_for(std::chrono::milliseconds((int)((float)((float)1 / (float)clock_speed_hz) * 1000)));
         registers.special.ir = fetch_next_word(cycles, memory);
-        printf("\nExecuting instruction: %04x at %04x\n", registers.special.ir, registers.special.ip - 2);
+        //printf("\nExecuting instruction: %04x at %04x\n", registers.special.ir, registers.special.ip - 2);
         switch (registers.special.ir) {
         case end:
             cycles = 0;

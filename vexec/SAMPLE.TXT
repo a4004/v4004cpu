@@ -1,10 +1,15 @@
-start:	tin _data1
-		lda _data1
-		call dosft
-		sta _data2
-		end
-dosft:  lsh rA
-		sta _data2
-		ret
-_data1:		
-_data2:			
+start:	tout #48
+		tout #65
+		tout #6c
+		tout #6c
+		tout #6f
+		tout #20
+		tout #57
+		tout #6f
+		tout #72
+		tout #6c
+		tout #64
+		tout #21
+		tout #0d
+		tout #0a
+		jmp start
