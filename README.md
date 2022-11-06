@@ -3,7 +3,7 @@ A custom virtual CPU implementation in C++ bundled together with a compatible as
 
 <p>
   <img alt="Build Passing" src="https://img.shields.io/static/v1?label=Build&message=Passing&color=limegreen&style=flat-square&logo=cplusplus&logoColor=white"/>
-  <img alt="Beta" src="https://img.shields.io/static/v1?label=Latest&message=0.1.1&color=green&style=flat-square"/>
+  <img alt="Beta" src="https://img.shields.io/static/v1?label=Latest&message=0.2.0&color=limegreen&style=flat-square"/>
 </p>
 
 <p>
