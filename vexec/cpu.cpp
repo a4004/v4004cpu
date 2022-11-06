@@ -37,6 +37,7 @@ void cpu::execute(int cycles, mem& memory, int clock_speed_hz) {
     while (cycles > 0) {
         std::this_thread::sleep_for(std::chrono::milliseconds((int)((float)((float)1 / (float)clock_speed_hz) * 1000)));
         registers.special.ir = fetch_next_word(cycles, memory);
+        printf("\nExecuting instruction: %04x at %04x\n", registers.special.ir, registers.special.ip - 2);
         switch (registers.special.ir) {
         case end:
             cycles = 0;
@@ -1076,22 +1077,17 @@ void cpu::execute(int cycles, mem& memory, int clock_speed_hz) {
             cache[1] = registers.special.ip;
             registers.special.mdr = cache[1];
             registers.special.mar = registers.special.sp;
+            registers.special.ip = cache[0];
             write_word(cycles, memory);
             registers.special.sp -= 2;
-            debug_dump();
-            memory.debug_dump();
             if (registers.special.sp < DATA_SIZE - STACK_SIZE) {
                 printf("STACK OVERFLOW ERROR! - Write operation occured at %04x outside minimum boundary.", registers.special.mar);
             }
-            registers.special.ip = cache[0];
             break;
         case ret:
             registers.special.sp += 2;
             registers.special.mar = registers.special.sp;
-            cache[0] = read_word(cycles, memory);
-            debug_dump();
-            memory.debug_dump();
-            registers.special.ip = cache[0];
+            registers.special.ip = read_word(cycles, memory);
             if (registers.special.sp >= DATA_SIZE - 1) {
                 printf("STACK OVERFLOW ERROR! - Read operation occured at %04x outside minimum boundary.", registers.special.mar);
             }

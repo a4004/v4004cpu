@@ -416,7 +416,7 @@ namespace vassemble
             {
                 case "end":
                     AddLEWord(0x0000);
-                    AddLEWord(0x0300); // nop padding
+                    AddLEWord(0x0000); // null padding
                     Logger.OK();
                     break;
                 case "ret":
