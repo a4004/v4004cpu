@@ -126,6 +126,3 @@ F103 0000     -> jmp 0          // jumps to address 0x0000 (start of the program
 ...           // more zeroes for padding
 ```
 > **Yet Another Important Note:** The address 0x0000 (and any addresses referenced in the assembly code a relative to the address space of the *virtual RAM* and not the byte-based indexes of the actual hex bytes in the file. For example, the address 0x0000 is actually 0x0002 in the file because the first two bytes are actually taken up by the size header which are not copied into the virtual RAM.
-
-## 🚧 More Stuff Coming Soon 🚧 
-Over the next few weeks and months you may see new content being added including the C# assembler that will allow users to write programs in the V4004 assembly language for this virtual CPU. This CPU won't be expanded beyond its current instruction set and was made for educational purposes both for myself and others who are interested. If you're interested in contributing or making changes to it then feel free to fork this repo and do just that.
