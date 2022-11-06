@@ -29,7 +29,7 @@ void cpu::reset_cpu(mem& memory) {
     memory.initialise();
 }
 void cpu::debug_dump() {
-    printf("--- BEGIN CPU STATE ---\nIP: %04x\tIR: %04x\tSP: %04x\tMDR: %04x\tMAR: %04x\nSTATUS REGISTERS:\tZ=%x\tN=%x\tO=%x\tP=%x\nrA: %02x\t\trB: %02x\t\trC: %02x\t\trD: %02x\nCACHE MEMORY:\t%04x\t%04x\t%04x\t%04x\t%04x\t%04x\t%04x\t%04x\n--- END CPU STATE ---\n",
+    printf("--- BEGIN CPU STATE ---\nIP: %04x\tIR: %04x\tSP: %04x\tMDR: %04x\tMAR: %04x\nSTATUS REGISTERS:\tZ=%x\tN=%x\tO=%x\tP=%x\nrA: %04x\trB: %04x\trC: %04x\trD: %04x\nCACHE MEMORY:\t%04x\t%04x\t%04x\t%04x\t%04x\t%04x\t%04x\t%04x\n--- END CPU STATE ---\n",
         registers.special.ip, registers.special.ir, registers.special.sp, registers.special.mdr, registers.special.mar, registers.special.status.zo, registers.special.status.ng, registers.special.status.of,
         registers.special.status.py, registers.rA, registers.rB, registers.rC, registers.rD, cache[0], cache[1], cache[2], cache[3], cache[4], cache[5], cache[6], cache[7]);
 }
@@ -124,7 +124,6 @@ void cpu::execute(int cycles, mem& memory, int clock_speed_hz) {
             registers.special.mdr = registers.rD;
             write_word(cycles, memory);
             break;
-
         case add_a_imm:
             cache[0] = fetch_next_word(cycles, memory);
             setFlagsAdd(registers.rA + cache[0], registers.rA, cache[0]);
@@ -1079,6 +1078,8 @@ void cpu::execute(int cycles, mem& memory, int clock_speed_hz) {
             registers.special.mar = registers.special.sp;
             write_word(cycles, memory);
             registers.special.sp -= 2;
+            debug_dump();
+            memory.debug_dump();
             if (registers.special.sp < DATA_SIZE - STACK_SIZE) {
                 printf("STACK OVERFLOW ERROR! - Write operation occured at %04x outside minimum boundary.", registers.special.mar);
             }
@@ -1088,6 +1089,8 @@ void cpu::execute(int cycles, mem& memory, int clock_speed_hz) {
             registers.special.sp += 2;
             registers.special.mar = registers.special.sp;
             cache[0] = read_word(cycles, memory);
+            debug_dump();
+            memory.debug_dump();
             registers.special.ip = cache[0];
             if (registers.special.sp >= DATA_SIZE - 1) {
                 printf("STACK OVERFLOW ERROR! - Read operation occured at %04x outside minimum boundary.", registers.special.mar);

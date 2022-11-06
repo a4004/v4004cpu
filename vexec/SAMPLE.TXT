@@ -4,6 +4,7 @@ start:	tin _data1
 		sta _data2
 		end
 dosft:  lsh rA
+		sta _data2
 		ret
-_data1:
-_data2:
+_data1:		
+_data2:			
