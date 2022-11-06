@@ -83,8 +83,15 @@ V4004 assembly code is pretty straightforward if you know the basics of generic 
 - Operands starting with `&` denote a memory address in base-16.
 - Operands starting with `_` denote a named **data** memory address like `_data1`.
 - Operands starting with `#` denote an immediate value in base-16.
+  - Operands starting and ending with `'` denote an immediate alphanumeric value. (Note ASCII control codes and special characters like `[SPACE]` must use the base-16 denotation).
 - Operand keywords `rA`, `rB`, `rC` and `rD` are reserved register names.
 - Other operands are treated as named memory locations such as `print` (without the prefix `_`) but it's important to note that they are treated like **executable** memory addresses and will produce warnings if used within the wrong context and errors if they cannot be resolved to a valid address.
+
+### Good Practice
+- Named data memory locations starting with `_` should be placed at the end of the assembly code.
+- The main section of code must always terminate with an `end` instruction otherwise, if using subroutines, a stack overflow error may occur.
+- Avoid recursive subroutines because stack memory is limited by default.
+- When using `push` make sure to always `pop` the value once it's no longer needed on the stack otherwise, a stack overflow error may occur.
 
 
 ## 👨‍💻 Writing Binary Code 👨‍💻
