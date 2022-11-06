@@ -41,7 +41,50 @@ PS > .\vexec.exe .\example_hello_world.v4004 5 5000
 
 V4004 assembly code is pretty straightforward if you know the basics of generic assembly language as it does not have any exotic features found on very complex CPU architectures. Below you'll find a table of instructions, their corresponding machine code and description:
 
-*Table Coming Soon*
+| Mnemonic | Operands | Machine Code | Description | Notes |
+| -------- | -------- | ------------ | ----------- | ----- |
+| end      |          | 0x0000       | Halts the processor. | Requires padding*. |
+| ret      |          | 0x0101       | Returns control to the calling routine specified. | Requires padding*. |
+| nop      |          | 0x0300       | Skips to the next instruction. | Used by the assembler (in conjunction with `end`) for padding. Requires padding if used on its own*.|
+| call     | `<addr>` | 0x0100       | Hands control to the function at the specified address. | |
+| tin      | `<addr>` | 0xF000       | Reads from terminal input and stores the character at the specified address. | |
+| tout     | `<imm>`/`<addr>`/`rA/rB/rC/rD` | *See `coredef.h`* | Outputs the character stored at the specified location to the terminal. | |
+| lda      | `<imm>`/`<addr>` | 0x0FA0 or 0x0FA1 | Loads the specified value from the immediate or memory address into the A register. | |
+| ldb      | `<imm>`/`<addr>` | 0x0FB0 or 0x0FB1 | Loads the specified value from the immediate or memory address into the B register. | |
+| ldc      | `<imm>`/`<addr>` | 0x0FC0 or 0x0FC1 | Loads the specified value from the immediate or memory address into the C register. | |
+| ldd      | `<imm>`/`<addr>` | 0x0FD0 or 0x0FD1 | Loads the specified value from the immediate or memory address into the D register. | |
+| sta      | `<addr>` | 0x0EA1 | Stores the value in the A register at the specified memory address. | |
+| stb      | `<addr>` | 0x0EB1 | Stores the value in the B register at the specified memory address. | |
+| stc      | `<addr>` | 0x0EC1 | Stores the value in the C register at the specified memory address. | |
+| std      | `<addr>` | 0x0ED1 | Stores the value in the D register at the specified memory address. | |
+| push     | `rA/rB/rC/rD` | 0x020A, 0x020B, 0x020C or 0x020D | Pushes the value stored in the specified register onto the stack in memory. | |
+| pop      | `rA/rB/rC/rD` | 0x021A, 0x021B, 0x021C or 0x021D | Pops the value stored at the stack pointer in memory back into the specified register. | |
+| jmp      | `<addr>` | 0x03F1 | Jumps to the specified memory address and begins executing. | Unlike `call` this does not store the return address so you cannot go back to the previous part in the code using `ret`. |
+| jmz      | `<addr>` | 0x03E1 | Conditional jump only if the zero flag is set. | *See `jmp`* |
+| jmn      | `<addr>` | 0x03D1 | Conditional jump only if the negative flag is set. | *See `jmp`* |
+| jmo      | `<addr>` | 0x03C1 | Conditional jump only if the overflow flag is set. | *See `jmp`* |
+| jpp      | `<addr>` | 0x03B1 | Conditional jump only if the parity flag is set. | *See `jmp`* |
+| not      | `rA/rB/rC/rD` | 0x050A, 0x050B, 0x050C or 0x050D | Bitwise NOT operation in the specified register. | |
+| lsh      | `rA/rB/rC/rD` | 0x05AA, 0x05AB, 0x05AC or 0x05AD | Bitwise LSH (Left Shift) of 1 operation in the specified register. | |
+| rsh      | `rA/rB/rC/rD` | 0x05BA, 0x05BB, 0x05BC or 0x05BD | Bitwise RSH (Right Shift) of 1 operation in the specified register. | |
+| add      | `rA/rB/rC/rD` `<imm>`/`<addr>`/`rA/rB/rC/rD` | *See `coredef.h`* | Adds the value in the second operand to the register in the first operand. | The result is stored in the first operand. |
+| sub      | `rA/rB/rC/rD` `<imm>`/`<addr>`/`rA/rB/rC/rD` | *See `coredef.h`* | Subtracts the value in the second operand from the register in the first operand. | The result is stored in the first operand. |
+| div     | `rA/rB/rC/rD` `<imm>`/`<addr>`/`rA/rB/rC/rD` | *See `coredef.h`* | Divides the value in the register in the first operand by the second operand. | The result is stored in the first operand. |
+| mul     | `rA/rB/rC/rD` `<imm>`/`<addr>`/`rA/rB/rC/rD` | *See `coredef.h`* | Multiplies the value in the second operand by the value of the register in the first operand. | The result is stored in the first operand. |
+| and      | `rA/rB/rC/rD` `<imm>`/`<addr>`/`rA/rB/rC/rD` | *See `coredef.h`* | Bitwise AND operation in the register in the first operand using the mask from the second operand. | The result is stored in the first operand. |
+| or      | `rA/rB/rC/rD` `<imm>`/`<addr>`/`rA/rB/rC/rD` | *See `coredef.h`* | Bitwise OR operation in the register in the first operand using the mask from the second operand. | The result is stored in the first operand. |
+| xor      | `rA/rB/rC/rD` `<imm>`/`<addr>`/`rA/rB/rC/rD` | *See `coredef.h`* | Bitwise XOR operation in the register in the first operand using the mask from the second operand. | The result is stored in the first operand. |
+| cpy      | `rA/rB/rC/rD` `rA/rB/rC/rD` | *See `coredef.h`* | Copies the value in the second operand into the first operand. | |
+| cmp      | `rA/rB/rC/rD` `rA/rB/rC/rD` | *See `coredef.h`* | Compares the two operands by subtracting the value in the second operand from the first and setting the arithmetic status flags accordingly. | This operation does not store the result of the subtraction. Only the status registers change if needed. |
+
+\* - the assembler design follows the principle that every line is 4 bytes in length when translated into machine code. This allows for easier memory address calculations when translating between named memory regions (called *symbols*) and the actual addresses of the regions. For this reason, and because of the fact some instructions (combined with opcode and operands) are less than 4 bytes, 16-bit padding instructions may be added such as `nop` or `end` that ensure memory is continuous and consistent.
+
+### Important Things to Remember:
+- Operands starting with `&` denote a memory address in base-16.
+- Operands starting with `_` denote a named **data** memory address like `_data1`.
+- Operands starting with `#` denote an immediate value in base-16.
+- Operand keywords `rA`, `rB`, `rC` and `rD` are reserved register names.
+- Other operands are treated as named memory locations such as `print` (without the prefix `_`) but it's important to note that they are treated like **executable** memory addresses and will produce warnings if used within the wrong context and errors if they cannot be resolved to a valid address.
 
 
 ## 👨‍💻 Writing Binary Code 👨‍💻
